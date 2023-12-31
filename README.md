@@ -59,13 +59,13 @@ set(Swift_Toolchain "org.swift.59202312071a")
 
 ```sh
 cd pico-embedded-swift
-mkdir build
-cd build
-cmake -G Ninja ..
-ninja
+CMAKE_EXPORT_COMPILE_COMMANDS=1 cmake -GNinja -Bbuild
+ninja -Cbuild
 ```
 
 This produces the executable `SwiftPico.elf` in the `build` directory.
+
+Note that `CMAKE_EXPORT_COMPILE_COMMANDS=1` is mandatory if you want VSCode to have IDE support for the project. It tells CMake to generate a file named `compile_commands.json` in the build directory. VSCode will pick this up automatically and use it to provide code completion and other IDE features.
 
 ## Running on the Pico
 
@@ -90,3 +90,7 @@ You have two options to copy the executable to the Pico:
     ```sh
     probe-rs run --chip RP2040 SwiftPico.elf
     ```
+
+### Code Completion
+
+You'll need to build the latest version of CMake for this to work. For this project, [this PR by Evan Wilde](https://gitlab.kitware.com/cmake/cmake/-/merge_requests/9095) was used. Also ensure that VSCode is configured to use the `swift` toolchain configured above. Also configure the VSCode extension to use `sourcekit-lsp` within this Swift toolchain.

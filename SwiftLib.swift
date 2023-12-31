@@ -20,7 +20,7 @@ public func swiftMain() {
         print("Waiting") // Used so we can connect serial in time
     }
 
-    guard net_init() > 0 else {
+    guard net_init() > 0 && net_join(ssid.cString, wifiPass.cString) > 0 else {
         printLoop("WiFi setup failed")
     }
 
