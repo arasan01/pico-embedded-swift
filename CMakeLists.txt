@@ -1,13 +1,25 @@
 cmake_minimum_required(VERSION 3.28)
 
+# Without this poliy, Sourcekit-LSP won't work
+if(DEFINED ENV{BUILD_FOR_IDE})
+    if(POLICY CMP0126)
+    cmake_policy(SET CMP0126 NEW)
+    endif()
+    if(POLICY CMP0157)
+    cmake_policy(SET CMP0157 NEW)
+    endif()
+endif()
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
+
 # User configuration
 # Change these values to match your config.
 # 
 # 1) Path to Raspberry Pi Pico C/C++ SDK
-#    This assumes SDK is cloned to a sibling directory of this project.
+#    This assumes SDK is cloned to the pico-sdk directory in your home directory.
 #    Alternatively, you can set PICO_SDK_PATH as an environment variable in your shell.
 if (NOT (DEFINED ENV{PICO_SDK_PATH}) AND (NOT PICO_SDK_PATH))
-    set(PICO_SDK_PATH "${CMAKE_CURRENT_LIST_DIR}/../pico-sdk")
+    set(PICO_SDK_PATH "~/pico-sdk")
     message("PICO_SDK_PATH is not set in environment, using value from CMakeLists.txt ('${PICO_SDK_PATH}')")
 endif ()
 # 2) Swift toolchain 
@@ -42,6 +54,7 @@ set(CMAKE_Swift_FLAGS
     # -Xfrontend -function-sections: enables dead stripping of unused runtime functions.
     "-target armv6m-none-none-eabi \
     -enable-experimental-feature Embedded \
+    -enable-experimental-feature TypedThrows \
     -wmo \
     -Xfrontend -function-sections"
 )
@@ -50,9 +63,7 @@ set(CMAKE_Swift_FLAGS
 # includes `print()`, which isn't available in Embedded Swift.
 set(CMAKE_Swift_COMPILER_FORCED TRUE)
 
-# === Begin project configuration
-
-project(SwiftPico LANGUAGES C CXX Swift)
+project(SwiftPico LANGUAGES C CXX ASM Swift)
 
 # Initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
@@ -64,16 +75,37 @@ if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
     message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
 endif()
 
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/picowi/lib
+)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/picowi/lib)
+
+add_library(SwiftLib
+    SwiftLib.swift
+    SwiftPicoPrint.swift
+)
+
+# set_property(TARGET SwiftLib PROPERTY Swift_COMPILATION_MODE "$<IF:$<CONFIG:Release>,wholemodule,incremental>")
+
+add_dependencies(SwiftLib picowi)
+add_dependencies(SwiftLib pico_stdlib)
+add_dependencies(SwiftLib hardware_pio)
+add_dependencies(SwiftLib hardware_dma)
+
 add_executable(SwiftPico
     main.c
 )
 
-add_subdirectory(SwiftLib)
-
 target_link_libraries(SwiftPico
     $<TARGET_OBJECTS:SwiftLib>
     pico_stdlib
+    picowi hardware_pio hardware_dma
 )
+
+# Enable USB output, disable UART output
+pico_enable_stdio_usb(SwiftPico 1)
+pico_enable_stdio_uart(SwiftPico 0)
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(SwiftPico)
