@@ -1,6 +1,3 @@
 {
-    "cmake.configureEnvironment": {
-        "BUILD_FOR_IDE": "1"
-    },
     "cmake.buildDirectory": "${workspaceFolder}/build"
 }

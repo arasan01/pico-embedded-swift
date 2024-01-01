@@ -1,16 +1,12 @@
 cmake_minimum_required(VERSION 3.28)
 
-# Without this poliy, Sourcekit-LSP won't work
-if(DEFINED ENV{BUILD_FOR_IDE})
-    if(POLICY CMP0126)
-    cmake_policy(SET CMP0126 NEW)
-    endif()
-    if(POLICY CMP0157)
-    cmake_policy(SET CMP0157 NEW)
-    endif()
+# Without these policies, Sourcekit-LSP won't work
+if(POLICY CMP0126)
+cmake_policy(SET CMP0126 NEW)
 endif()
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
+if(POLICY CMP0157)
+cmake_policy(SET CMP0157 NEW)
+endif()
 
 # User configuration
 # Change these values to match your config.
@@ -49,10 +45,10 @@ execute_process(
 set(CMAKE_Swift_COMPILER
     "${swiftc_Path}"
 )
-set(CMAKE_Swift_FLAGS
+string(APPEND CMAKE_Swift_FLAGS
     # -wmo: Whole-module optimization is always required for Embedded Swift.
     # -Xfrontend -function-sections: enables dead stripping of unused runtime functions.
-    "-target armv6m-none-none-eabi \
+    " -target armv6m-none-none-eabi \
     -enable-experimental-feature Embedded \
     -enable-experimental-feature TypedThrows \
     -wmo \
@@ -75,13 +71,10 @@ if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
     message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
 endif()
 
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/picowi/lib
-)
-
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/picowi/lib)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/picowi/lib)
 
-add_library(SwiftLib
+add_library(SwiftLib OBJECT
     SwiftLib.swift
     SwiftPicoPrint.swift
 )
@@ -96,6 +89,8 @@ add_dependencies(SwiftLib hardware_dma)
 add_executable(SwiftPico
     main.c
 )
+
+set_target_properties(SwiftPico PROPERTIES Swift_COMPILATION_MODE "wholemodule")
 
 target_link_libraries(SwiftPico
     $<TARGET_OBJECTS:SwiftLib>
