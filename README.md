@@ -13,7 +13,7 @@ A proof of concept for executing Embedded Swift code on the [Raspberry Pi Pico](
 
 - Host OS: macOS 13.x or 14.x
   
-  Tested on macOS 13.6.2. It’ll probably work on Linux with minimal modifications to tell CMake how to find the Swift toolchain, but I haven’t tested this.
+  Tested on macOS 13.6.2 and macOS 14.0. It’ll probably work on Linux with minimal modifications to tell CMake how to find the Swift toolchain, but I haven’t tested this.
 
 - A recent nightly Swift toolchain from [swift.org](https://www.swift.org/download/). Tested with the Xcode toolchain from December 7, 2023.
 
