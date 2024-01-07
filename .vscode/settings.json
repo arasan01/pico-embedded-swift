@@ -1,3 +1,9 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}/build"
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "swift.path": "/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2023-12-07-a.xctoolchain/usr/bin/",
+    "swift.sourcekit-lsp.serverPath": "/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2023-12-07-a.xctoolchain/usr/bin/sourcekit-lsp",
+    "swift.sourcekit-lsp.serverArguments": [
+        "--compilation-db-search-path",
+        "."
+    ]
 }
