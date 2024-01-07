@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  server-dev:
+    build:
+      context: .
+      dockerfile: Devcontainer.Dockerfile
+    volumes:
+      - .:/workspace
+      - /workspace/.build/
+    working_dir: /workspace
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    # Required for ptrace-based debuggers like C++, Go, and Rust
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined

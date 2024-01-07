@@ -94,3 +94,7 @@ You have two options to copy the executable to the Pico:
 ### Code Completion
 
 You'll need to build the latest version of CMake for this to work. For this project, [this PR by Evan Wilde](https://gitlab.kitware.com/cmake/cmake/-/merge_requests/9095) was used. Also ensure that VSCode is configured to use the `swift` toolchain configured above. Also configure the VSCode extension to use `sourcekit-lsp` within this Swift toolchain.
+
+```sh
+brew install cmake —HEAD
+```

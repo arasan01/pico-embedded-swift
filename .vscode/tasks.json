@@ -1,0 +1,40 @@
+{
+    "version": "2.0.0",
+    "command": "build",
+    "tasks": [
+        {
+            "label": "Configure Swift Pico",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "CMAKE_EXPORT_COMPILE_COMMANDS": "1",
+                    "SWIFTC": "/bin/swiftc",
+                    "PICO_SDK_PATH": "/home/vscode/pico-sdk",
+                },
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "command": "cmake",
+            "args": [
+                "-GNinja",
+                "-Bbuild"
+            ],
+        },
+        {
+            "label": "Build Swift Pico",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "SWIFTC": "/bin/swiftc",
+                    "PICO_SDK_PATH": "/home/vscode/pico-sdk",
+                },
+            },
+            "command": "ninja",
+            "args": [
+                "-C",
+                "build"
+            ],
+        }
+    ]
+}

@@ -58,6 +58,7 @@ string(APPEND CMAKE_Swift_FLAGS
 # fails for Embedded Swift because it tries to compile a Swift program that 
 # includes `print()`, which isn't available in Embedded Swift.
 set(CMAKE_Swift_COMPILER_FORCED TRUE)
+set(CMAKE_Swift_COMPILER /usr/bin/swiftc)
 
 project(SwiftPico LANGUAGES C CXX ASM Swift)
 
@@ -79,7 +80,7 @@ add_library(SwiftLib OBJECT
     SwiftPicoPrint.swift
 )
 
-# set_property(TARGET SwiftLib PROPERTY Swift_COMPILATION_MODE "$<IF:$<CONFIG:Release>,wholemodule,incremental>")
+# set_target_properties(SwiftLib PROPERTIES Swift_COMPILATION_MODE "wholemodule")
 
 add_dependencies(SwiftLib picowi)
 add_dependencies(SwiftLib pico_stdlib)
