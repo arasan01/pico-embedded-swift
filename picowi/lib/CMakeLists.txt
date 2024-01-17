@@ -4,9 +4,9 @@
 set (RELEASE 1)
 
 cmake_minimum_required(VERSION 3.12)
-include($ENV{PICO_SDK_PATH}/pico_sdk_init.cmake)
+include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 pico_sdk_init()
-include($ENV{PICO_SDK_PATH}/tools/CMakeLists.txt)
+include(${PICO_SDK_PATH}/tools/CMakeLists.txt)
 
 # Set name of project (as PROJECT_NAME) and C/C++ standards
 project(picowi C CXX ASM)
