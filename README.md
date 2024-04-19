@@ -15,7 +15,7 @@ A proof of concept for executing Embedded Swift code on the [Raspberry Pi Pico](
   
   Tested on macOS 13.6.2 and macOS 14.0. It’ll probably work on Linux with minimal modifications to tell CMake how to find the Swift toolchain, but I haven’t tested this.
 
-- A recent nightly Swift toolchain from [swift.org](https://www.swift.org/download/). Tested with the Xcode toolchain from December 7, 2023.
+- A recent nightly Swift toolchain from [swift.org](https://www.swift.org/download/). Tested with the Xcode toolchain from December 7, 2023 from the Trunk Development (main) Snapshots.
 
 - A clone of the [Raspberry Pi Pico C/C++ SDK](https://github.com/raspberrypi/pico-sdk/):
 
@@ -38,10 +38,11 @@ A proof of concept for executing Embedded Swift code on the [Raspberry Pi Pico](
 - [CMake](https://cmake.org/) and [Ninja](https://ninja-build.org/):
 
   ```sh
-  brew install cmake ninja
+  brew install cmake --HEAD
+  brew install ninja
   ```
 
-  The Pico SDK uses CMake as its build system and we’re piggybacking on that. And CMake’s Swift support only works with Ninja. The Swift library is also built with CMake. The unfortunate consequence is that we can’t easily use a [SwiftPM](https://www.swift.org/package-manager/) package for the Swift library as we’d have to tell CMake how to build the package.
+  The Pico SDK uses CMake (as for 01/2024 we need recent patches from HEAD branch) as its build system and we’re piggybacking on that. And CMake’s Swift support only works with Ninja. The Swift library is also built with CMake. The unfortunate consequence is that we can’t easily use a [SwiftPM](https://www.swift.org/package-manager/) package for the Swift library as we’d have to tell CMake how to build the package.
 
 ## Configuration
 
@@ -67,6 +68,14 @@ This produces the executable `SwiftPico.elf` in the `build` directory.
 
 Note that `CMAKE_EXPORT_COMPILE_COMMANDS=1` is mandatory if you want VSCode to have IDE support for the project. It tells CMake to generate a file named `compile_commands.json` in the build directory. VSCode will pick this up automatically and use it to provide code completion and other IDE features.
 
+## Troubleshooting
+
+1. Cmake error `<unknown>:0: error: unable to load standard library for target 'armv6m-none-none-eabi'`
+if you see this error, it means that you used Cmake without the Swift embedded support. Upgrade your CMake to the latest version (`brew install cmake --HEAD`).
+
+2. `ninja: error: 'CMakeFiles/SwiftLib.dir/SwiftLib.swift.obj', needed by 'SwiftLib' missing and no known rule to make it`
+You used Swift toolchain, which doesn't have embedded target support (`-enable-experimental-feature Embeded`). Use the newest Swift compilation from `main`. For example, the latest Xcode toolchain from December 7, 2023 from the Trunk Development (main) Snapshots works fine.
+
 ## Running on the Pico
 
 You have two options to copy the executable to the Pico:
@@ -83,7 +92,7 @@ You have two options to copy the executable to the Pico:
     
     - The Pico will automatically reboot and run the program (you can ignore macOS’s “disk not ejected properly” message).
 
-2. Via the debug probe. The debug probe is connected to your PC and talks to the Pico via its debug port. This allows you to reflash the Pico without having to disconnect it.
+2. Via the debug probe or another Pico device acting as a debugger (through the [Pico Probe software](https://github.com/raspberrypi/picoprobe)). The debug probe is connected to your PC and talks to the Pico via its debug port. This allows you to reflash the Pico without having to disconnect it.
 
     I use [probe.rs](https://probe.rs/) for this, which is a tool from the Rust community, but it works in this context too. Provided you have [Rust](https://www.rust-lang.org/) installed, you can install probe-rs with `cargo install probe-rs-debugger --features cli`.
 
