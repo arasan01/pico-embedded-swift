@@ -71,7 +71,7 @@ Note that `CMAKE_EXPORT_COMPILE_COMMANDS=1` is mandatory if you want VSCode to h
 ## Troubleshooting
 
 1. Cmake error `<unknown>:0: error: unable to load standard library for target 'armv6m-none-none-eabi'`
-if you see this error, it means that you used Cmake without the Swift embeedded support. Upgrade your Cmake to the latest version (`brew install cmake --HEAD`).
+if you see this error, it means that you used Cmake without the Swift embedded support. Upgrade your CMake to the latest version (`brew install cmake --HEAD`).
 
 2. `ninja: error: 'CMakeFiles/SwiftLib.dir/SwiftLib.swift.obj', needed by 'SwiftLib' missing and no known rule to make it`
 You used Swift toolchain, which doesn't have embedded target support (`-enable-experimental-feature Embeded`). Use the newest Swift compilation from `main`. For example, the latest Xcode toolchain from December 7, 2023 from the Trunk Development (main) Snapshots works fine.
