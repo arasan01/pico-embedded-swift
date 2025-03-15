@@ -9,7 +9,7 @@
                 "env": {
                     "CMAKE_EXPORT_COMPILE_COMMANDS": "1",
                     "SWIFTC": "/bin/swiftc",
-                    "PICO_SDK_PATH": "/home/vscode/pico-sdk",
+                    "PICO_SDK_PATH": "${workspaceFolder}/../pico-sdk",
                 },
             },
             "runOptions": {
@@ -27,7 +27,7 @@
             "options": {
                 "env": {
                     "SWIFTC": "/bin/swiftc",
-                    "PICO_SDK_PATH": "/home/vscode/pico-sdk",
+                    "PICO_SDK_PATH": "${workspaceFolder}/../pico-sdk",
                 },
             },
             "command": "ninja",

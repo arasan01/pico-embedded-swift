@@ -2,6 +2,12 @@
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "swift.sourcekit-lsp.serverArguments": [
         "--compilation-db-search-path",
-        "."
-    ]
+        "${workspaceFolder}/build"
+    ],
+    "lldb.library": "/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2025-03-10-a.xctoolchain/System/Library/PrivateFrameworks/LLDB.framework/Versions/A/LLDB",
+    "lldb.launch.expressions": "native",
+    "swift.path": "/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2025-03-10-a.xctoolchain/usr/bin",
+    "swift.swiftEnvironmentVariables": {
+        "DEVELOPER_DIR": "/Applications/Xcode-16.3.0-Beta.2.app"
+    }
 }

@@ -16,7 +16,7 @@ public func swiftMain() {
     io_init()
 
     for _ in 0..<10 {
-        usdelay(1_000_000)   
+        usdelay(1_000_000)
         print("Waiting") // Used so we can connect serial in time
     }
 
@@ -40,7 +40,7 @@ public func swiftMain() {
             led.toggle()
             wifi_set_led(led)
         }
-    }    
+    }
 }
 
 func printLoop(_ string: StaticString) -> Never {

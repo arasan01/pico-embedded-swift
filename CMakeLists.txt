@@ -8,22 +8,27 @@ if(POLICY CMP0157)
 cmake_policy(SET CMP0157 NEW)
 endif()
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(PICO_BOARD pico_w)
+
 # User configuration
 # Change these values to match your config.
-# 
+#
 # 1) Path to Raspberry Pi Pico C/C++ SDK
 #    This assumes SDK is cloned to the pico-sdk directory in your home directory.
 #    Alternatively, you can set PICO_SDK_PATH as an environment variable in your shell.
 if (NOT (DEFINED ENV{PICO_SDK_PATH}) AND (NOT PICO_SDK_PATH))
-    set(PICO_SDK_PATH "~/pico-sdk")
+    # set(PICO_SDK_PATH "~/pico-sdk")
+    set(PICO_SDK_PATH "${CMAKE_CURRENT_LIST_DIR}/../pico-sdk")
     message("PICO_SDK_PATH is not set in environment, using value from CMakeLists.txt ('${PICO_SDK_PATH}')")
 endif ()
-# 2) Swift toolchain 
+# 2) Swift toolchain
 #    Change this to the current Swift nightly toolchain you installed.
 #    The ID is in /Library/Developer/Toolchains/[TOOLCHAIN].xctoolchain/Info.plist
 #    Alternatively, set the TOOLCHAINS environment variable.
 if (NOT (DEFINED ENV{TOOLCHAINS}))
-    set(Swift_Toolchain "org.swift.59202312071a")
+    # set(Swift_Toolchain "org.swift.59202312071a")
+    set(Swift_Toolchain "org.swift.62202503101a")
     message("Swift toolchain: ('${Swift_Toolchain}') (using value from CMakeLists.txt as TOOLCHAINS is not set in environment)")
 else ()
     set(Swift_Toolchain "$ENV{TOOLCHAINS}")
@@ -50,12 +55,18 @@ string(APPEND CMAKE_Swift_FLAGS
     # -Xfrontend -function-sections: enables dead stripping of unused runtime functions.
     " -target armv6m-none-none-eabi \
     -enable-experimental-feature Embedded \
+    -enable-experimental-feature Extern \
     -enable-experimental-feature TypedThrows \
     -wmo \
-    -Xfrontend -function-sections"
+    -Xfrontend -function-sections \
+    -Xfrontend -disable-stack-protector \
+    -Xcc -DCYW43_LWIP \
+    -Xcc -DPICO_CYW43_ARCH_THREADSAFE_BACKGROUND \
+    -Xcc -mfloat-abi=soft \
+    -Xcc -fshort-enums"
 )
-# Disable CMake’s automatic Swift compiler check. The compiler check always 
-# fails for Embedded Swift because it tries to compile a Swift program that 
+# Disable CMake’s automatic Swift compiler check. The compiler check always
+# fails for Embedded Swift because it tries to compile a Swift program that
 # includes `print()`, which isn't available in Embedded Swift.
 set(CMAKE_Swift_COMPILER_FORCED TRUE)
 set(CMAKE_Swift_COMPILER /usr/bin/swiftc)
